@@ -337,7 +337,7 @@ test.only("verify the location after reload of OCS @regression @ocs", async ({
       expect(body.status).toBe("success");
     });
 
-    await ocsButton.click();
+    await ocsButton.click();  
 
     await page.pause();
   });
