@@ -78,6 +78,7 @@
 import { test, expect } from "@playwright/test";
 import { loginAndValidate } from "../support/registration-utils";
 import { waitForApi } from "../support/ons-helper";
+// import process from "process";
 
 const email = process.env.EMAIL!;
 const password = process.env.PASSWORD!;
@@ -221,7 +222,8 @@ test.only("verify the location after reload of OCS @regression @ocs", async ({
   );
 
   await test.step("Open OCS module", async () => {
-    await expect(chillerLocator).toBeVisible();
+    await page.waitForLoadState("domcontentloaded", { timeout: 60000 });
+    await expect(chillerLocator).toBeVisible({ timeout: 60000 });
 
     await chillerLocator.click();
 
@@ -328,7 +330,7 @@ test.only("verify the location after reload of OCS @regression @ocs", async ({
       [response] = await Promise.all([
         waitForApi(page, "performCalculation"),
         page.reload({ waitUntil: "domcontentloaded" }),
-        page.waitForLoadState("domcontentloaded")
+        page.waitForLoadState("domcontentloaded"),
       ]);
 
       expect(response.status()).toBe(200);
@@ -338,7 +340,10 @@ test.only("verify the location after reload of OCS @regression @ocs", async ({
     });
 
     await ocsButton.click();
-
-    await page.pause();
+    await waitForApi(page, "performCalculation");
+    // await expect(page.locator("dropdown-item d-flex align-items-center pointer")).toContainText("Hamburg")
+    await expect(
+      page.locator(".dropdown-item.d-flex.align-items-center.pointer"),
+    ).toContainText("Hamburg");
   });
 });

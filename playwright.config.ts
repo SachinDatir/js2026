@@ -1,6 +1,13 @@
 import { defineConfig, devices } from "@playwright/test";
-import dotenv from 'dotenv';
+import dotenv from "dotenv";
+
 dotenv.config();
+
+const baseURL = process.env.BASE_URL;
+
+if (!baseURL) {
+  throw new Error("Missing BASE_URL environment variable.");
+}
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -14,28 +21,29 @@ dotenv.config();
  */
 export default defineConfig({
   testDir: "./tests",
-  /* Run tests in files in parallel */
-  fullyParallel: true,
+  /* These tests share app state, so keep them isolated. */
+  fullyParallel: false,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
   workers: process.env.CI ? 1 : undefined,
+  timeout: 100_000,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
-    // baseURL: 'http://localhost:3000',
-     viewport: { width: 1920, height: 1080 },
-    launchOptions: {
+    baseURL,
+    viewport: { width: 1920, height: 1080 },
+     launchOptions: {
       args: ["--start-maximized"],
     },
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
-    baseURL:process.env.BASE_URL
-    
+    screenshot: "only-on-failure",
+    video: "retain-on-failure",
   },
 
   /* Configure projects for major browsers */
