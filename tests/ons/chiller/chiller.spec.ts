@@ -1,21 +1,23 @@
 import { test, expect } from "@playwright/test";
-import { loginAndValidate } from "../support/registration-utils";
+import { LoginPage } from "../../../pages/auth/LoginPage";
+import { waitForApi } from "../../../support/utils/wait-utils";
 
 const email = process.env.EMAIL!;
 const password = process.env.PASSWORD!;
 
 test.beforeEach(async ({ page }) => {
+  const loginPage = new LoginPage(page);
+
   await page.goto("/"); // use baseURL from config
-  await expect(page.locator('[href="/auth/registration"]')).toBeEnabled();
+  await loginPage.expectLoaded();
 });
 
 test("Validate the chiller partload calculation Compressor Step (%) functionality", async ({
   page,
 }) => {
-  const waitForApi = (url: string) =>
-    page.waitForResponse((res) => res.url().includes(url));
+  const loginPage = new LoginPage(page);
 
-  await loginAndValidate(page, email, password);
+  await loginPage.loginAndValidate(email, password);
 
   // ✅ Navigation
   await page.waitForTimeout(2000);
@@ -24,10 +26,10 @@ test("Validate the chiller partload calculation Compressor Step (%) functionalit
     .locator("#DEU")
     .getByRole("heading", { name: "CyberCool 2" })
     .click();
-  await waitForApi("listFilteredModels");
+  await waitForApi(page, "listFilteredModels");
   // ✅ Intercept + action (NO race condition)
   let [response] = await Promise.all([
-    waitForApi("performCalculation"),
+    waitForApi(page, "performCalculation"),
     page.getByRole("button", { name: "Proceed" }).click(),
   ]);
 
@@ -38,7 +40,7 @@ test("Validate the chiller partload calculation Compressor Step (%) functionalit
 
   // ✅ Second API call
   [response] = await Promise.all([
-    waitForApi("performCalculation"),
+    waitForApi(page, "performCalculation"),
     page.getByTitle("Add operating point").click({ force: true }),
   ]);
 

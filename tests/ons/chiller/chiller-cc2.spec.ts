@@ -76,19 +76,21 @@
 // });
 
 import { test, expect } from "@playwright/test";
-import { loginAndValidate } from "../support/registration-utils";
-import { waitForApi } from "../support/ons-helper";
+import { LoginPage } from "../../../pages/auth/LoginPage";
+import { waitForApi } from "../../../support/utils/wait-utils";
 // import process from "process";
 
 const email = process.env.EMAIL!;
 const password = process.env.PASSWORD!;
 
 test.beforeEach(async ({ page }) => {
+  const loginPage = new LoginPage(page);
+
   await page.goto("/");
 
-  await expect(page.locator('[href="/auth/registration"]')).toBeEnabled();
+  await loginPage.expectLoaded();
 
-  await loginAndValidate(page, email, password);
+  await loginPage.loginAndValidate(email, password);
 });
 
 test("verify the location change functionality of OCS @smoke @ocs", async ({

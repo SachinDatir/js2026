@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import {
   generateUniqueEmail,
   generateRandomPassword,
-} from "../../support/registration-utils";
+} from "../../support/utils/data-generator";
 import { faker } from "@faker-js/faker";
 import { exec } from "node:child_process";
 
