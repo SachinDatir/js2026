@@ -85,10 +85,13 @@ test.describe("CyberAirDx Saving and Retrieval", () => {
         compressorExpertResponsePromise,
       ]);
 
-      const inputProductLineCount = await inputParameter.inputProductLine.count()
+      const inputProductLineCount =
+        await inputParameter.inputProductLine.count();
       expect(inputProductLineCount).toBeGreaterThan(0);
 
-      expect(await inputParameter.inputProductLine.allTextContents()).toEqual([" CyberAir  MiniSpace  CyberLab  CyberAir Mini "])
+      expect(await inputParameter.inputProductLine.allTextContents()).toEqual([
+        " CyberAir  MiniSpace  CyberLab  CyberAir Mini ",
+      ]);
 
       await inputParameter.InputParameter(inputParameter.inputAirFlow, "4100");
       await inputParameter.expectParameterValue(
@@ -116,6 +119,91 @@ test.describe("CyberAirDx Saving and Retrieval", () => {
         evaporatorExpertResponsePromise,
         compressorExpertResponsePromise,
       ]);
+
+      //    unitOutput.netTotalCoolingCapacity = unitOutput.coolingCapacity
+      // - outputData.fan.totalPowerConsumption
+
+      let outPutData = authResponseBody.data?.outputData;
+      let coolingCapacity =
+        authResponseBody.data?.outputData?.unitOutput.coolingCapacity;
+      let fanTotalPowerCunsumption = outPutData.fan.totalPowerConsumption;
+
+      let netTotalCoolingCapacity = coolingCapacity - fanTotalPowerCunsumption;
+
+      console.log(Math.round(netTotalCoolingCapacity * 100) / 100);
+
+      await page
+        .locator('[for="netTotalCoolingCapacity"]')
+        .last()
+        .textContent()
+        .then((coolCap) => {
+          console.log(coolCap, ":::::::::::::");
+        });
+      console.log(netTotalCoolingCapacity, ">>>>>>>>>");
+
+      await page.pause();
     });
+  });
+
+  test.only("Dashboard ", async ({ page }) => {
+    await loginPage.loginAndValidate(email, password);
+    await loginPage.expectAppOpened();
+    await test.step("Open CyberAir model from Room Cooling", async () => {
+      await page.waitForLoadState("domcontentloaded");
+      await waitForApi(page, "modelSelectionFilters");
+      await dashboardPage.openRoomCooling();
+      await productLinePage.selectCyberAir();
+      await productConfigurationPage.selectModel(cyberAirDxModels.asd621A);
+    });
+
+    const condenserListResponsePromise = waitForApi(page, "condenserList");
+    const condenserFormattedResponsePromise = waitForApi(
+      page,
+      "condenserFormatted",
+    );
+    const evaporatorExpertResponsePromise = waitForApi(
+      page,
+      "thestEvaporatorExpertCalculation",
+    );
+    const compressorExpertResponsePromise = waitForApi(
+      page,
+      "compressorExpertCalculation",
+    );
+    const getElectricalDataForONS = waitForApi(page, "getElectricalDataForONS");
+
+    const checkCalResponse = await submitAndWaitForResponse(
+      () => productConfigurationPage.proceed(),
+      page,
+      "performAllCalculations",
+    );
+    const authResponseBody = await checkCalResponse.json();
+    expect(authResponseBody.message).toBe("Success");
+    expect(authResponseBody.data?.outputData?.unitOutput.unitType).toBe(
+      cyberAirDxModels.asd621A,
+    );
+    await Promise.all([
+      condenserListResponsePromise,
+      condenserFormattedResponsePromise,
+      evaporatorExpertResponsePromise,
+      compressorExpertResponsePromise,
+    ]);
+
+    await page.waitForLoadState("domcontentloaded");
+    await page.pause();
+    await expect(page.getByTitle("E-Datasheet")).toBeVisible();
+    await page.getByTitle("E-Datasheet").click({ force: true });
+
+    await page
+      .locator("#ElectricalDataSheet>div>div")
+      .filter({ hasText: "Electrical Data Sheet" })
+      .isVisible();
+
+    await page.getByText("Data sheet",{exact:true}).click({force:true})
+
+    const getElectricalDataForONSRes = await getElectricalDataForONS;
+    const resOFErd = await getElectricalDataForONSRes.json();
+    expect(resOFErd.title).toBe("EDB Data Sheet");
+
+    //a[title="Electrical Data Sheet"]
   });
 });

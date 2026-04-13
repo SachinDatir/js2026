@@ -4,12 +4,15 @@ export class InputPage {
   readonly inputAirFlow: Locator;
   readonly externalStaticPressure: Locator;
   readonly inputProductLine: Locator;
+  readonly ERDbutton :Locator
 
   constructor(page: Page) {
     this.page = page;
     this.inputAirFlow = page.locator("input#inputAirFlow");
     this.externalStaticPressure = page.locator("input#inputExt");
     this.inputProductLine = page.locator("#inputProductLine");
+    this.ERDbutton = page.locator('a[title="Electrical Data Sheet"]')
+
   }
 
   async enterAirFlow(airFlowValue: string) {
