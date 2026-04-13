@@ -36,7 +36,7 @@ export default defineConfig({
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL,
-    viewport: { width: 1440, height: 900 },
+    viewport: { width: 1302, height: 320 },
      launchOptions: {
       args: ["--disable-dev-shm-usage"],
     },
