@@ -4,8 +4,6 @@ import {
   generateRandomPassword,
 } from "../../support/utils/data-generator";
 import { faker } from "@faker-js/faker";
-import { exec } from "node:child_process";
-
 test.beforeEach(async ({ page }) => {
   const registerButton = '[href="/auth/registration"]';
 
