@@ -5,6 +5,7 @@ export class InputPage {
   readonly externalStaticPressure: Locator;
   readonly inputProductLine: Locator;
   readonly ERDbutton :Locator
+  readonly coolingCapacity :Locator
 
   constructor(page: Page) {
     this.page = page;
@@ -12,6 +13,7 @@ export class InputPage {
     this.externalStaticPressure = page.locator("input#inputExt");
     this.inputProductLine = page.locator("#inputProductLine");
     this.ERDbutton = page.locator('a[title="Electrical Data Sheet"]')
+    this.coolingCapacity = page.locator('[for="coolingCapacity"]').last()
 
   }
 
