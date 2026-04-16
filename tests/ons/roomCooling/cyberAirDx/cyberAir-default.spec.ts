@@ -74,7 +74,7 @@ test.describe("CyberAirDx default configuration", () => {
       evaporatorExpertResponsePromise,
       compressorExpertResponsePromise,
     ]);
-
+    const requestBody = checkCalResponse.request().postDataJSON();
     const data = authResponseBody.data.outputData;
     const expertModeFanData = data.expertModeFan;
     const deuCoolingSystemFans = data.masterData.DeuCoolingSystemFans;
@@ -109,6 +109,96 @@ test.describe("CyberAirDx default configuration", () => {
           netCoolingCapacityFromUI,
         );
       });
+
+    const dxData = data.dxConvergence;
+    let c1TotalCapacity = 0;
+    let c2TotalCapacity = 0;
+    let c1Pel = 0;
+    let c2Pel = 0;
+    let invertor = 0;
+
+    if (data.masterData.isPowerConverterRequired) {
+      if (
+        requestBody.operatingConditions.compressorSpeed >
+        requestBody.operatingConditions.refrigerant.circuit1.DeuCompressor
+          .minSpeedInverter
+      ) {
+        invertor =
+          (requestBody.operatingConditions.compressorSpeed -
+            requestBody.operatingConditions.refrigerant.circuit1.DeuCompressor
+              .minSpeedInverter) *
+          requestBody.operatingConditions.refrigerant.circuit1.DeuCompressor
+            .coefficientInverter;
+      }
+    }
+
+    if (dxData.convergenceCircuit1) {
+      c1TotalCapacity =
+        data.dxConvergence.convergenceCircuit1.optimalEvaporatingPoint
+          .capacityTotalKw;
+      c1Pel = data.compressor.circuit1.electricalPowerConsp;
+    }
+    if (dxData.convergenceCircuit2) {
+      c2TotalCapacity =
+        data.dxConvergence.convergenceCircuit2.optimalEvaporatingPoint
+          .capacityTotalKw;
+      c2Pel = data.compressor.circuit2.electricalPowerConsp;
+    }
+
     // await page.pause();
+    //cooling capacity sensible
+    const totalCoolingCapacity = c1TotalCapacity + c2TotalCapacity;
+
+    const sensibleCoolingCapacity = data.unitOutput.sensibleCoolingCapacity;
+
+    const netSensibleCoolingCapacity =
+      data.unitOutput.sensibleCoolingCapacity - fanPowerConsumptionFromAPI;
+
+    const eer =
+      data.unitOutput.coolingCapacity / data.unitOutput.totalPowerConsumption;
+
+    //COP
+    let COP =
+      data.unitOutput.coolingCapacity /
+      data.compressor.circuit1.electricalPowerConsp;
+
+    const numOfCompressors =
+      requestBody.operatingConditions.refrigerant.circuit1.noOfCompressors;
+    console.log("Number of Compressors:", numOfCompressors);
+
+    let totalPowerConsumption =
+      c1Pel *
+        requestBody.operatingConditions.refrigerant.circuit1.noOfCompressors +
+      (c2Pel *
+        requestBody.operatingConditions.refrigerant.circuit2?.noOfCompressors ||
+        0) +
+      Number(data.fan.powerConsumption.toFixed(1)) +
+      invertor +
+      Number((data.condensorFan?.powerConsumption || 0).toFixed(1));
+
+    console.log("Total Power Consumption:", totalPowerConsumption);
+
+    await  page.locator('[for="coolingCapacity"]').last().
+    textContent().then((coolCap: any) => {
+      const coolingCapacityValueFromUI = Number(
+        coolCap.replace(/[^0-9.]/g, ""),
+      );
+      expect(coolingCapacityValueFromUI).toBeCloseTo(
+        Math.round(totalCoolingCapacity * 10) / 10,
+      );
+    });
+
+    await page
+          .locator('[for="sensibleCoolingCapacity"]')
+          .last()
+          .textContent()
+          .then((coolingCapacityText:any) => {
+            const sensibleCoolingCapacityValueFromUI = Number(
+              coolingCapacityText.replace(/[^0-9.]/g, ""),
+            );
+            expect(sensibleCoolingCapacityValueFromUI).toBeCloseTo(
+              Math.round(sensibleCoolingCapacity * 10) / 10,
+            );
+          });
   });
 });
