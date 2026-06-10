@@ -36,3 +36,5 @@ export const generateLoginToken = async (
   let apiRes = await response.json();
   return apiRes.data?.token;
 };
+
+

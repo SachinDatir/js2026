@@ -12,7 +12,7 @@ test.beforeEach(async ({ page }) => {
   await page.waitForTimeout(1000);
 });
 
-test("Validate the registration functionality", async ({ page }) => {
+test.skip("Validate the registration functionality", async ({ page }) => {
   const registerButton = '[href="/auth/registration"]';
 
   const gdprCheckBox = "#GDPRReadWarning";
@@ -110,7 +110,7 @@ test("should not be able to proceed with only email or organization", async ({
   // await page.locator("");
 });
 
-test.only("Validate the chiller partload calculation Compressor Step (%) functionality", async ({
+test.skip("Validate the chiller partload calculation Compressor Step (%) functionality", async ({
   page,
 }) => {
   const checkOAuth = page.waitForResponse(

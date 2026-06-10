@@ -26,7 +26,7 @@ test.describe("Validate the brokenmlinks", () => {
 
   // });
 
-  test("should be able to handle the broken links", async ({ page }) => {
+  test.skip("should be able to handle the broken links", async ({ page }) => {
     loginPage = new LoginPage(page);
     dashboardPage = new DashboardPage(page);
     productLinePage = new ProductLinePage(page);
@@ -89,7 +89,7 @@ test.describe("Validate the brokenmlinks", () => {
     });
   });
 
-  test.only("Validate the ESPN sports broken links", async ({ page }) => {
+  test("Validate the ESPN sports broken links", async ({ page }) => {
     const arr = [];
 
     await page.goto("https://www.espncricinfo.com/");

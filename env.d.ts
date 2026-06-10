@@ -3,5 +3,7 @@ declare namespace NodeJS {
     BASE_URL: string;
     EMAIL: string;
     PASSWORD: string;
+    DEV_PASSWORD: string;
+    selectProjectSaving:string
   }
 }

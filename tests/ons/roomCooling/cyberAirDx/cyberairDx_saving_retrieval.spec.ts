@@ -12,7 +12,7 @@ import { CheckOAuthUserResponse } from "../../../../pages/auth/LoginPage";
 import { InputPage } from "../../../../pages/ons/InputPage";
 const { email, password } = defaultUser;
 
-test.describe("CyberAirDx Saving and Retrieval",  () => {
+test.describe("CyberAirDx Saving and Retrieval", () => {
   let loginTokenResponse: unknown;
   let loginPage: LoginPage;
   let dashboardPage: DashboardPage;
@@ -98,6 +98,8 @@ test.describe("CyberAirDx Saving and Retrieval",  () => {
         inputParameter.inputAirFlow,
         "4100",
       );
+
+      const updatePer = await waitForApi(page, "performAllCalculations");
       await Promise.all([
         condenserListResponsePromise,
         condenserFormattedResponsePromise,
@@ -109,6 +111,8 @@ test.describe("CyberAirDx Saving and Retrieval",  () => {
         inputParameter.externalStaticPressure,
         "21",
       );
+      await waitForApi(page, "performAllCalculations");
+
       await inputParameter.expectParameterValue(
         inputParameter.externalStaticPressure,
         "21",
@@ -120,32 +124,51 @@ test.describe("CyberAirDx Saving and Retrieval",  () => {
         compressorExpertResponsePromise,
       ]);
 
+      await page.waitForTimeout(2000);
+
       //    unitOutput.netTotalCoolingCapacity = unitOutput.coolingCapacity
       // - outputData.fan.totalPowerConsumption
-
-      let outPutData = authResponseBody.data?.outputData;
+      const jsonBody = await updatePer.json();
+      let outPutData = jsonBody.data?.outputData;
       let coolingCapacity =
-        authResponseBody.data?.outputData?.unitOutput.coolingCapacity;
-      let fanTotalPowerCunsumption = outPutData.fan.totalPowerConsumption;
+        jsonBody.data?.outputData?.unitOutput.coolingCapacity;
+      let fanPowerW = outPutData.fan.totalPowerConsumption;
 
-      let netTotalCoolingCapacity = coolingCapacity - fanTotalPowerCunsumption;
+      // Convert Fan Watts to kW
+      let fanPowerKw = fanPowerW;
 
-      console.log(Math.round(netTotalCoolingCapacity * 100) / 100);
+      console.log(`fanPowerKw ${fanPowerKw} kW`);
 
+      // Calculate Net Capacity
+      let netTotalCoolingCapacity = coolingCapacity - fanPowerKw;
+
+      // Use a variable for the rounded expected value
+      const expectedValue = Math.round(netTotalCoolingCapacity * 100) / 100;
+
+      // console.log(expectedValue,)
+
+      console.log(`Expected Net Total Cooling Capacity: ${expectedValue} kW`);
       await page
         .locator('[for="netTotalCoolingCapacity"]')
         .last()
         .textContent()
         .then((coolCap) => {
-          console.log(coolCap, ":::::::::::::");
-        });
-      console.log(netTotalCoolingCapacity, ">>>>>>>>>");
+          const uiValue = Number(coolCap?.trim().split(" ")[0]);
 
-      await page.pause();
+          console.log("API Cooling Capacity:", coolingCapacity);
+          console.log("API Fan Power (kW):", fanPowerKw);
+          console.log("Calculated Net:", netTotalCoolingCapacity);
+          console.log("UI Value:", uiValue);
+
+          // Use 0 precision if you just want to ensure they are within 1 unit of each other,
+          // or 1 precision for a 0.1 tolerance.
+          expect(netTotalCoolingCapacity).toBeCloseTo(uiValue, 1);
+        });
+      // await page.pause();
     });
   });
 
-  test.only("Dashboard ", async ({ page }) => {
+  test("Dashboard ", async ({ page }) => {
     await loginPage.loginAndValidate(email, password);
     await loginPage.expectAppOpened();
     await test.step("Open CyberAir model from Room Cooling", async () => {
@@ -198,7 +221,7 @@ test.describe("CyberAirDx Saving and Retrieval",  () => {
       .filter({ hasText: "Electrical Data Sheet" })
       .isVisible();
 
-    await page.getByText("Data sheet",{exact:true}).click({force:true})
+    await page.getByText("Data sheet", { exact: true }).click({ force: true });
 
     const getElectricalDataForONSRes = await getElectricalDataForONS;
     const resOFErd = await getElectricalDataForONSRes.json();

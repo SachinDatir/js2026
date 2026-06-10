@@ -212,7 +212,7 @@ test("verify the location change functionality of OCS @smoke @ocs", async ({
   });
 });
 
-test.only("verify the location after reload of OCS @regression @ocs", async ({
+test("verify the location after reload of OCS @regression @ocs", async ({
   page,
 }) => {
   const ocsButton = page.locator("#cuOcsButton");

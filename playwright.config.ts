@@ -22,13 +22,13 @@ if (!baseURL) {
 export default defineConfig({
   testDir: "./tests",
   /* These tests share app state, so keep them isolated. */
-  fullyParallel: false,
+  fullyParallel: true,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Opt out of parallel tests on CI. */
-  workers: process.env.CI ? 1 : undefined,
+  workers: process.env.CI ? 4 : undefined,
   timeout: 100_000,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: "html",

@@ -5,6 +5,8 @@ export class ProfilePage {
   readonly profileTab:Locator
   readonly userManagement:Locator
   readonly tabList :Locator
+  readonly preferredUnit: Locator
+  readonly saveButton: Locator
 
   constructor(page: Page) {
     this.page = page;
@@ -12,5 +14,7 @@ export class ProfilePage {
     this.profileTab = page.locator("li>a>.bx-user")
     this.userManagement = page.locator("li>a>.bx-group")
     this.tabList = page.locator('ul[role="tablist"]>li>a')
+    this.preferredUnit = page.locator('select#preferredUnit')
+    this.saveButton = page.locator("#btn-settings-save")
   }
 }

@@ -5,6 +5,8 @@ export class DashboardPage {
   readonly roomCoolingCard: Locator;
   readonly chillerCard: Locator;
   readonly proceedButton: Locator;
+  readonly cyberAirMiniCard: Locator
+  readonly roomCoolingDeuProductLine: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -13,6 +15,8 @@ export class DashboardPage {
       '[src="assets/img/app/app/chiller_units.png"]',
     );
     this.proceedButton = page.locator("#modelSelectionProceed");
+    this.cyberAirMiniCard = page.getByRole("heading", { name: "CyberAir Mini" });
+    this.roomCoolingDeuProductLine = page.locator("#DEU");
   }
 
   async openRoomCooling() {
@@ -26,5 +30,8 @@ export class DashboardPage {
 
   async proceed() {
     await this.proceedButton.click();
+  }
+  async selectCyberAirMini() {
+    await this.roomCoolingDeuProductLine.locator(this.cyberAirMiniCard).click();
   }
 }

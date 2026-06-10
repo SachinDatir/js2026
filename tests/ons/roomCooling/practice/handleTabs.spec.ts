@@ -65,7 +65,7 @@ test("Handle multiple manual tabs", async ({ context }) => {
   //   await page1.pause();
 });
 
-test.only("Handle multiple tabs by using promises", async ({ context }) => {
+test("Handle multiple tabs by using promises", async ({ context }) => {
   // Create second tab
   const page1 = await context.newPage();
   const brokenLinks = page1.locator(".footer__item>a");
