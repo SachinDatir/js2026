@@ -52,7 +52,7 @@ test.describe("CyberLab Room Cooling Test", () => {
     await dashboardPage.openRoomCooling();
     await dashboardPage.selectCyberAirMini();
 
-    await productLinePage.selectCoolingSystem(" GE ");
+    await dashboardPage.selectCoolingSystem(" GE ");
   });
 
   test("Should verify the calculation settings when the user add the operating point", async ({
@@ -361,9 +361,74 @@ test.describe("CyberLab Room Cooling Test", () => {
     );
     await checkCalRes;
     await page.waitForLoadState("domcontentloaded");
-    await expect( 
+    await expect(
       page.locator(".scrolling-op", { hasText: /OP\s*1/ }),
     ).not.toBeVisible();
+  });
 
+  test.skip("verify the ocs functionality", async ({ page }) => {
+    const newAirFlow = "3000";
+    const performAllCal = waitForApi(page, "performAllCalculations");
+    const compressorExpertCalculation = waitForApi(
+      page,
+      "compressorExpertCalculation",
+    );
+    await productConfigurationPage.selectModel(cyberAirMiniGeModels.CCD81GE);
+    await test.step("Validate the performAllCalculations after entering into the configuration", async () => {
+      const thestEvaporatorExpertCalculation = waitForApi(
+        page,
+        "thestEvaporatorExpertCalculation",
+      );
+      const compressorExpertCalculation = waitForApi(
+        page,
+        "compressorExpertCalculation",
+      );
+
+      const checkCalResponse = await submitAndWaitForResponse(
+        () => productConfigurationPage.proceed(),
+        page,
+        "performAllCalculations",
+      );
+
+      const authResponseBody = await checkCalResponse.json();
+      expect(authResponseBody.message).toBe("Data Fetched Success");
+
+      expect(authResponseBody.data?.outputData?.unitOutput.unitType).toBe(
+        cyberAirMiniGeModels.CCD81GE,
+      );
+
+      const requestBody = checkCalResponse.request().postDataJSON();
+
+      await expect(requestBody).toBeDefined();
+      await thestEvaporatorExpertCalculation;
+      await compressorExpertCalculation;
+
+      await page.waitForLoadState("domcontentloaded");
+    });
+
+    // await inputPage.inputAirFlow.first()
+    await inputPage.InputParameter(inputPage.inputAirFlow, "3000");
+    await performAllCal;
+    await compressorExpertCalculation;
+    await inputPage.InputParameter(inputPage.externalStaticPressure, "21");
+    await performAllCal;
+    compressorExpertCalculation;
+    await expect(inputPage.ocsButton).toBeEnabled({ enabled: true });
+    await inputPage.ocsButton.click({ force: true });
+    await performAllCal;
+
+    const airFlowTxt: string | null | any = await page
+      .locator(".tableOcs")
+      .first()
+      .locator("tr")
+      .last()
+      .textContent();
+    const match = airFlowTxt.match(/[\d,]+/);
+
+    if (match) {
+      const cleanString = match[0].replace(/,/g, "");
+      const normalizedNumber = parseInt(cleanString, 10);
+      expect(normalizedNumber).toBe(Number(newAirFlow));
+    }
   });
 });

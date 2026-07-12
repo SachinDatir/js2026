@@ -55,6 +55,8 @@ export class LoginPage {
   }
 
   async loginAndValidate(email: string, password: string) {
+    await this.open()
+    await this.expectLoaded()
     await this.emailInput.fill(email);
     await expect(this.loginButton).toBeVisible();
     await expect(this.loginButton).toBeEnabled({ timeout: 100000 });

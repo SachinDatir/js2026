@@ -14,3 +14,8 @@ export const cyberAirMiniGeModels = {
   CCD81GE: "CCD 81 GE",
   CCD111GE: "CCD 111 GE"
 }
+
+export const splitAirModels ={
+  SXG40_0 :"SXG 40 0",
+  SXG40F:"SXG 40 F"
+}

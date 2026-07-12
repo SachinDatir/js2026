@@ -35,7 +35,7 @@ export class ProductLinePage {
     await this.cyberLabCard.click();
   }
 
-  async selectCoolingSystem(systemName: string) {
-    await this.systemCooling.getByRole('heading', { name: systemName, exact: true }).click();
-  }
+  // async selectCoolingSystem(systemName: string) {
+  //   await this.systemCooling.getByRole('heading', { name: systemName, exact: true }).click();
+  // }
 }
