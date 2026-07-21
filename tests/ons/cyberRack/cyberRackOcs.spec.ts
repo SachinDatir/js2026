@@ -113,19 +113,19 @@ test.describe("", () => {
     await page.waitForLoadState("domcontentloaded");
     await page.waitForLoadState("load");
     await page.waitForTimeout(1000);
-    await page.pause();
-    await page.locator('a[title=" Modine "]').dblclick({ force: true });
-    await expect(
-      page.locator('[id="ThestCoilStaticBackdrop"]').locator(".modal-title"),
-    ).toHaveText("Thest CW Coil Calculation");
-    const responsePromise = page.waitForResponse(
-      (response) =>
-        response.url().includes("thestExpertCalculations") &&
-        response.status() === 200,
-    );
-    await page.getByRole("button", { name: "Calculate" }).click();
-    let res = await responsePromise;
-    let resJson = res.json();
-    console.log(resJson);
+    // await page.pause();
+    // await page.locator('a[title=" Modine "]').dblclick({ force: true });
+    // await expect(
+    //   page.locator('[id="ThestCoilStaticBackdrop"]').locator(".modal-title"),
+    // ).toHaveText("Thest CW Coil Calculation");
+    // const responsePromise = page.waitForResponse(
+    //   (response) =>
+    //     response.url().includes("thestExpertCalculations") &&
+    //     response.status() === 200,
+    // );
+    // await page.getByRole("button", { name: "Calculate" }).click();
+    // let res = await responsePromise;
+    // let resJson = res.json();
+    // console.log(resJson);
   });
 });

@@ -207,7 +207,6 @@ test.describe("CyberAirDx Saving and Retrieval", () => {
         netCoolingCapacityUpdated.toString(),
       );
 
-      await page.pause()
       let pPUEupdated =
         (netCoolingCapacityUpdated * 8760 + 166795) /
         (netCoolingCapacityUpdated * 8760);
@@ -215,7 +214,6 @@ test.describe("CyberAirDx Saving and Retrieval", () => {
       await expect(page.locator("#system1-ppue")).toHaveText(
         pPUEupdated.toFixed(2).toString(),
       );
-      await page.pause();
     });
   });
 });

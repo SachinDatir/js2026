@@ -128,10 +128,17 @@ test.describe("CyberAirDx default configuration", () => {
       );
       //compressor
 
-      const compressorEl = page.getByTitle(" COMPRESSOR ");
+      const compressorEl = page.locator(
+        '[data-bs-target="#CompressorStaticBackdrop"]',
+      );
       const refrigerentEl = page.locator("select#Refrigerant");
       const selectedOption = page.locator("select#Refrigerant option:checked");
 
+      await page.getByTitle("Expert Calculation Tabs").click({ force: true });
+      await page.waitForSelector(
+        "[data-bs-target='#ThestEvaporatorStaticBackdrop']",
+        { state: "visible" },
+      );
       if (await evaporatorSelector.isVisible()) {
         await evaporatorSelector.click({ force: true });
       }
@@ -149,7 +156,15 @@ test.describe("CyberAirDx default configuration", () => {
 
       await page.getByRole("button", { name: "Close" }).click({ force: true });
       await expect(page.getByRole("button", { name: "Close" })).toBeHidden();
-
+      await page.waitForTimeout(1000);
+      await page
+        .getByTitle("Expert Calculation Tabs").hover({ force: true })
+       await page
+        .getByTitle("Expert Calculation Tabs") .click({ force: true });
+      await page.waitForSelector(
+        '[data-bs-target="#CompressorStaticBackdrop"]',
+        { state: "visible" },
+      );
       await expect(compressorEl).toBeEnabled();
       if (await compressorEl.isVisible()) {
         await page.waitForTimeout(500);
@@ -222,7 +237,7 @@ test.describe("CyberAirDx default configuration", () => {
     });
 
     await test.step("verify the setting", async () => {
-      let newMinAirFlow:string = "3500";
+      let newMinAirFlow: string = "3500";
       let newMaxAirFlow = 6500;
       let newRetAirTempMin = 15;
       let newRetAirTempMax = 35;
@@ -230,7 +245,9 @@ test.describe("CyberAirDx default configuration", () => {
       await page.locator("a[title=Settings]").click({ force: true });
 
       await page.locator("si-us-formatter#inputVolumenstromMin input").click();
-      await page.locator("si-us-formatter#inputVolumenstromMin input").fill(testData.newAirFlow);
+      await page
+        .locator("si-us-formatter#inputVolumenstromMin input")
+        .fill(testData.newAirFlow);
     });
   });
 });
