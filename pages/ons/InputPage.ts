@@ -14,6 +14,8 @@ export class InputPage {
   readonly lphwReheatButton :Locator
   readonly inputPowerSupply :Locator
   readonly inputReturnAirTemp :Locator
+  readonly inputRelHum :Locator
+  readonly inputCoolingSys : Locator
 
   constructor(page: Page) {
     this.page = page;
@@ -28,6 +30,8 @@ export class InputPage {
     this.lphwReheatButton = page.locator("#lphwReheat")
     this.inputPowerSupply = page.locator("#inputPowerSupply")
     this.inputReturnAirTemp = page.locator("input#inputRet")
+    this.inputRelHum = page.locator("input#inputRelHum")
+    this.inputCoolingSys = page.locator("#inputCoolingSys")
   }
 
   async enterAirFlow(airFlowValue: string) {

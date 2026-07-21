@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const baseURL = process.env.BASE_URL;
+const baseURL = process.env.DEV_BASE_URL || process.env.BASE_URL;
 
 if (!baseURL) {
   throw new Error("Missing BASE_URL environment variable.");

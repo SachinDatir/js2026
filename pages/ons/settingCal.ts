@@ -9,6 +9,8 @@ export class SettingPage {
   readonly input_returnAirTemp_Min: Locator;
   readonly input_returnAirTemp_Max: Locator;
   readonly input_Pressure_Drop_offSet: Locator;
+  readonly input_relHumMin :Locator
+  readonly input_relHumMax:Locator
   constructor(page: Page) {
     this.page = page;
     this.settingTab = page.locator("a[title=Settings]");
@@ -28,5 +30,7 @@ export class SettingPage {
     this.input_Pressure_Drop_offSet = page.locator(
       "si-us-formatter#inputLuftdruckOffset input",
     );
+    this.input_relHumMin = page.locator('input[formcontrolname="RelHumPercentMin"]')
+    this.input_relHumMax = page.locator('input[formcontrolname="RelHumPercentMax"]')
   }
 }
