@@ -4,7 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx playwright test"
+    "test": "npx playwright test",
+    "test:local": "TEST_ENV=local npx playwright test",
+    "test:dev": "TEST_ENV=development npx playwright test",
+    "auth:dev": "mkdir -p playwright/.auth && npx playwright codegen --save-storage=playwright/.auth/development.json https://development.oneselect.global/auth/login"
   },
   "keywords": [],
   "author": "",

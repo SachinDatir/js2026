@@ -3,7 +3,7 @@ import { LoginPage } from "../../../pages/auth/LoginPage";
 import { waitForApi } from "../../../support/utils/wait-utils";
 
 const email = process.env.EMAIL!;
-const password = process.env.PASSWORD!;
+const password = process.env.DEV_PASSWORD!;
 
 test.beforeEach(async ({ page }) => {
   const loginPage = new LoginPage(page);
@@ -17,7 +17,7 @@ test("Validate the chiller partload calculation Compressor Step (%) functionalit
 }) => {
   const loginPage = new LoginPage(page);
 
-  await loginPage.loginAndValidate(email, password);
+  // await loginPage.loginAndValidate(email, password);
 
   // ✅ Navigation
   await page.waitForTimeout(2000);

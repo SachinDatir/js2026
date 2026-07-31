@@ -1,12 +1,25 @@
 import { defineConfig, devices } from "@playwright/test";
 import dotenv from "dotenv";
+import fs from "node:fs";
+import path from "node:path";
 
-dotenv.config();
+const testEnvironment = process.env.TEST_ENV ?? "local";
+const environmentFile = path.resolve(`.env.${testEnvironment}`);
 
-const baseURL = process.env.DEV_BASE_URL || process.env.BASE_URL;
+if (!fs.existsSync(environmentFile)) {
+  throw new Error(
+    `Missing environment file: .env.${testEnvironment}. Create it from .env.${testEnvironment}.example.`,
+  );
+}
+
+dotenv.config({ path: environmentFile });
+
+const baseURL = process.env.BASE_URL;
+const usesApiAuthentication = testEnvironment === "local";
+const storageState = `playwright/.auth/${testEnvironment}.json`;
 
 if (!baseURL) {
-  throw new Error("Missing BASE_URL environment variable.");
+  throw new Error(`Missing BASE_URL in .env.${testEnvironment}.`);
 }
 /**
  * Read environment variables from file.
@@ -47,40 +60,17 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    ...(usesApiAuthentication
+      ? [{ name: "setup", testMatch: /.*\.setup\.ts/ }]
+      : []),
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: 'chromium',
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState,
+      },
+      ...(usesApiAuthentication ? { dependencies: ["setup"] } : {}),
     },
-
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
-
-    // {
-    //   name: 'webkit',
-    //   use: { ...devices['Desktop Safari'] },
-    // },
-
-    /* Test against mobile viewports. */
-    // {
-    //   name: 'Mobile Chrome',
-    //   use: { ...devices['Pixel 5'] },
-    // },
-    // {
-    //   name: 'Mobile Safari',
-    //   use: { ...devices['iPhone 12'] },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    // },
   ],
 
   /* Run your local dev server before starting the tests */

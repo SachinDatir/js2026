@@ -14,6 +14,7 @@ export class DashboardPage {
   readonly systemCooling: Locator;
   readonly compressorType: Locator;
   readonly CyberAirCard: Locator;
+  readonly cciIndoor :Locator
 
   constructor(page: Page) {
     this.page = page;
@@ -39,6 +40,10 @@ export class DashboardPage {
 
     this.dischargeType = page.locator("#dischargeType");
     this.compressorType = page.locator("#compressorType");
+    this.cciIndoor = page.getByRole("heading", {
+      name: "CyberCool Indoor",
+      exact: true,
+    });
   }
 
   async openRoomCooling() {

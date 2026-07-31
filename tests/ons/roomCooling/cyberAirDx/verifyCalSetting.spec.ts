@@ -1,10 +1,8 @@
 import { test, expect } from "@playwright/test";
-import { LoginPage } from "../../../../pages/auth/LoginPage";
 import {
   submitAndWaitForResponse,
   waitForApi,
 } from "../../../../support/utils/wait-utils";
-import { defaultUser } from "../../../../test-data/auth-users";
 import { DashboardPage } from "../../../../pages/ons/DashboardPage";
 import { InputPage } from "../../../../pages/ons/InputPage";
 import { ProductLinePage } from "../../../../pages/ons/ProductLinePage";
@@ -12,10 +10,8 @@ import { SettingPage } from "../../../../pages/ons/settingCal";
 import { cyberAirDxModels } from "../../../../test-data/ons-models";
 import { ProfilePage } from "../../../../pages/ons/profilePage";
 import { SavingPage } from "../../../../pages/ons/savingSharingPage";
-const { email, password } = defaultUser;
 
 test.describe("Verify the old calculation setting", () => {
-  let loginPage: LoginPage;
   let dashBoardPage: DashboardPage;
   let inputPage: InputPage;
   let productLinePage: ProductLinePage;
@@ -29,7 +25,6 @@ test.describe("Verify the old calculation setting", () => {
   let settingPage: SettingPage;
   let profilePage: ProfilePage;
   test.beforeEach(async ({ page }) => {
-    loginPage = new LoginPage(page);
     dashBoardPage = new DashboardPage(page);
     inputPage = new InputPage(page);
     productLinePage = new ProductLinePage(page);
@@ -40,8 +35,7 @@ test.describe("Verify the old calculation setting", () => {
     configurationData = {
       configName: "Test" + (+Date.now() % 100000),
     };
-    await loginPage.loginAndValidate(email, password);
-    await loginPage.expectAppOpened();
+    await page.goto("/app/module-selector/filter-section");
     await page.waitForLoadState("domcontentloaded");
     await waitForApi(page, "modelSelectionFilters");
     await dashBoardPage.openRoomCooling();
