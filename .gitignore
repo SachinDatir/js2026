@@ -1,5 +1,8 @@
 
 # Playwright
+.env.local
+.env.development
+.env
 node_modules/
 /test-results/
 /playwright-report/
