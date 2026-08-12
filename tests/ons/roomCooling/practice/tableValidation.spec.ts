@@ -135,6 +135,5 @@ test.describe("Validate the tables in playwright", () => {
     console.log(table);
     expect(table[0]).toEqual(row1)
     // console.log(ocsTable,">>>>>")
-    await page.pause();
   });
 });
