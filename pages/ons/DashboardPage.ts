@@ -14,7 +14,9 @@ export class DashboardPage {
   readonly systemCooling: Locator;
   readonly compressorType: Locator;
   readonly CyberAirCard: Locator;
-  readonly cciIndoor :Locator
+  readonly cciIndoor: Locator;
+  readonly cc2Card: Locator;
+  readonly cyberLabCard: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -44,15 +46,29 @@ export class DashboardPage {
       name: "CyberCool Indoor",
       exact: true,
     });
+    this.cc2Card = page.getByRole("heading", {
+      name: "CyberCool 2",
+      exact: true,
+    });
+
+    this.cyberLabCard = this.deuProductLine.getByRole("heading", {
+      name: "CyberLab",exact: true
+    });
   }
 
   async openRoomCooling() {
-    await expect(this.roomCoolingCard).toBeVisible();
+    await expect(this.roomCoolingCard).toBeVisible({timeout: 50000});
     await this.roomCoolingCard.click();
   }
 
   async openChiller() {
     await this.chillerCard.click();
+  }
+
+  async openCyberLab() {
+    await this.openRoomCooling();
+    await expect(this.cyberLabCard).toBeVisible();
+    await this.cyberLabCard.click();
   }
 
   async proceed() {
@@ -92,6 +108,23 @@ export class DashboardPage {
     await compressor.click({ force: true });
   }
 
+  async selectCoolingType(coolingType: string) {
+    let cooling = this.page.getByRole("heading", {
+      name: coolingType,
+      exact: true,
+    });
+    await cooling.scrollIntoViewIfNeeded();
+    await cooling.click({ force: true });
+  }
+  async selectCasingSize(casingSize: string) {
+    let caseSize = this.page.getByRole("heading", {
+      name: casingSize,
+      exact: true,
+    });
+    await caseSize.scrollIntoViewIfNeeded();
+    await caseSize.click({ force: true });
+  }
+
   modelCard(modelName: string) {
     return this.page.getByRole("heading", { name: modelName, exact: true });
   }
@@ -100,5 +133,35 @@ export class DashboardPage {
     await this.modelCard(modelName).scrollIntoViewIfNeeded();
     await expect(this.modelCard(modelName)).toBeVisible();
     await this.modelCard(modelName).click();
+  }
+
+  async selectNoiseData(noiseData: string) {
+    let noise = this.page.getByRole("heading", {
+      name: noiseData,
+      exact: true,
+    });
+    await noise.scrollIntoViewIfNeeded();
+    await expect(noise).toBeVisible();
+    await noise.click({ force: true });
+  }
+
+  async selectRefrigerantType(refrigerantType: string) {
+    let refrigerant = this.page.getByRole("heading", {
+      name: refrigerantType,
+      exact: true,
+    });
+    await refrigerant.scrollIntoViewIfNeeded();
+    await expect(refrigerant).toBeVisible();
+    await refrigerant.click({ force: true });
+  }
+
+  async selectPowerSupply(powerSupply: string) {
+    let powerSupplyOption = this.page.getByRole("heading", {
+      name: powerSupply,
+      exact: true,
+    });
+    // await powerSupplyOption.scrollIntoViewIfNeeded();
+    await expect(powerSupplyOption).toBeVisible();
+    await powerSupplyOption.click({ force: true });
   }
 }

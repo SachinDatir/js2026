@@ -1,8 +1,6 @@
-import { APIRequestContext, Page } from "@playwright/test";
+import { APIRequestContext } from "@playwright/test";
 
-// export const waitForApi = (page: Page, url: string) => {
-//   return page.waitForResponse((res) => res.url().includes(url));
-// };
+export { waitForApi } from "./utils/wait-utils";
 
 export const generateLoginToken = async (
   request: APIRequestContext,
@@ -36,5 +34,4 @@ export const generateLoginToken = async (
   let apiRes = await response.json();
   return apiRes.data?.token;
 };
-
 

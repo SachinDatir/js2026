@@ -17,6 +17,7 @@ dotenv.config({ path: environmentFile });
 const baseURL = process.env.BASE_URL;
 const usesApiAuthentication = testEnvironment === "local";
 const storageState = `playwright/.auth/${testEnvironment}.json`;
+const unauthenticatedTestFiles = /registration-login\/(?!auth\.setup\.ts)/;
 
 if (!baseURL) {
   throw new Error(`Missing BASE_URL in .env.${testEnvironment}.`);
@@ -69,7 +70,15 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         storageState,
       },
+      testIgnore: unauthenticatedTestFiles,
       ...(usesApiAuthentication ? { dependencies: ["setup"] } : {}),
+    },
+    {
+      name: 'chromium-unauthenticated',
+      testMatch: unauthenticatedTestFiles,
+      use: {
+        ...devices['Desktop Chrome'],
+      },
     },
   ],
 
