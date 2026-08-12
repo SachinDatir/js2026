@@ -190,6 +190,26 @@ test.describe("Validate the digital scroll", () => {
       const reqBody = await checkCalResponse.request().postDataJSON();
 
       expect(reqBody.operatingConditions.operationMode).toBe("summer");
+
+      await page.locator('[title="Settings (v2)"]').click({ force: true });
+      const refrigerent = await page
+        .locator(".setting-card > .form-select")
+        .innerText();
+      expect(refrigerent).toContain("R134a");
+      //Mid-Point / Dew-Point (Circuit 1)
+      await page
+        .getByRole("checkbox", { name: "Checked = Mid-Point |" })
+        .check({ force: true });
+
+        const checkCalResponseGe = await submitAndWaitForResponse(
+        () =>  page.locator("#recalculateV2Btn").click({ force: true }),
+        page,
+        "performAllCalculations",
+      );
+      const rawFormData = await checkCalResponseGe.request().postDataJSON();
+      console.log(rawFormData.settingsData, ":::::::::::");
+      expect(rawFormData.settingsData["Mid-Point/Dew-Point (Circuit 1)"]).toBe(1);
+      await page.pause();
     });
   });
 });
