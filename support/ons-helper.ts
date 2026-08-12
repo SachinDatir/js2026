@@ -8,7 +8,7 @@ export const generateLoginToken = async (
   password: string,
 ) => {
   const response = await request.post(
-    "http://localhost:3000/v1/globals/auth/login",
+    "https://api.development.oneselect.global/v1/globals/auth/login",
     {
       failOnStatusCode: false,
       headers: {
@@ -31,7 +31,12 @@ export const generateLoginToken = async (
     );
   }
 
-  let apiRes = await response.json();
-  return apiRes.data?.token;
-};
+  const apiRes = await response.json();
+  if (!response.ok() || !apiRes.data?.token) {
+    throw new Error(
+      `Login failed (${response.status()}): ${JSON.stringify(apiRes)}`,
+    );
+  }
 
+  return apiRes.data.token;
+};
