@@ -27,7 +27,9 @@ async function getAccessToken(page: Page): Promise<string> {
     ?.localStorage.find(({ name }) => name === "access_token")?.value;
 
   if (!rawToken) {
-    throw new Error("No access_token found in the authenticated storage state.");
+    throw new Error(
+      "No access_token found in the authenticated storage state.",
+    );
   }
 
   try {
@@ -41,58 +43,64 @@ test.describe("Verify the save config dropdowns in cyber lab", () => {
   configurationData = {
     configName: "Test" + (+Date.now() % 100000),
   };
-let token :any
-  test.beforeEach(async ({ page }) => {
-   token = await getAccessToken(page);
+  let token: any;
+
+  test.beforeAll(async ({ page }) => {
+    token = await getAccessToken(page);
   });
+  test.beforeEach(async ({ page }) => {
+    const config = new CreateConfig(page);
+    await config.createConfiguration(token, configurationData.configName);
+  });
+
   test("Verify the dropdowns in cyber lab", async ({ page }) => {
-    // const performAllCalculationsResponsePromise = waitForApi(
-    //   page,
-    //   "performAllCalculations",
-    // );
-    // const condenserListResponsePromise = waitForApi(page, "condenserList");
-    // const condenserFormattedResponsePromise = waitForApi(
-    //   page,
-    //   "condenserFormatted",
-    // );
+    const performAllCalculationsResponsePromise = waitForApi(
+      page,
+      "performAllCalculations",
+    );
+    const condenserListResponsePromise = waitForApi(page, "condenserList");
+    const condenserFormattedResponsePromise = waitForApi(
+      page,
+      "condenserFormatted",
+    );
 
     const savingPage = new SavingPage(page);
 
     const dashboardPage = new DashboardPage(page);
-    // await page.goto("/app/module-selector/filter-section");
-    // await page.waitForLoadState("domcontentloaded");
-    // await dashboardPage.openCyberLab();
+    await page.goto("/app/module-selector/filter-section");
+    await page.waitForLoadState("domcontentloaded");
+    await dashboardPage.openCyberLab();
 
-    // await test.step("Validate the performAllCalculations after entering into the configuration", async () => {
-    //   const condenserListResponsePromise = waitForApi(page, "condenserList");
+    await test.step("Validate the performAllCalculations after entering into the configuration", async () => {
+      const condenserListResponsePromise = waitForApi(page, "condenserList");
 
-    //   const checkCalResponse = await submitAndWaitForResponse(
-    //     () => dashboardPage.proceed(),
-    //     page,
-    //     "performAllCalculations",
-    //   );
+      const checkCalResponse = await submitAndWaitForResponse(
+        () => dashboardPage.proceed(),
+        page,
+        "performAllCalculations",
+      );
 
-    //   const authResponseBody = await checkCalResponse.json();
-    //   expect(authResponseBody.message).toBe("Success");
+      const authResponseBody = await checkCalResponse.json();
+      expect(authResponseBody.message).toBe("Success");
 
-    //   const requestBody = checkCalResponse.request().postDataJSON();
+      const requestBody = checkCalResponse.request().postDataJSON();
 
-    //   await expect(requestBody).toBeDefined();
-    //   await condenserListResponsePromise;
+      await expect(requestBody).toBeDefined();
+      await condenserListResponsePromise;
 
-    //   await page.waitForLoadState("domcontentloaded");
-    // });
-    const config = new CreateConfig(page);
+      await page.waitForLoadState("domcontentloaded");
+    });
 
-    await config.createConfiguration(token);
-    // await savingPage.saveConfiguration(
-    //   "Test ONS",
-    //   configurationData.configName,
-    // );
+    const newConfigName= "Test" + (+Date.now() % 100000)
 
-    // await performAllCalculationsResponsePromise;
-    // await condenserListResponsePromise;
-    // await condenserFormattedResponsePromise;
+    await savingPage.saveConfiguration(
+      "Test ONS",
+      newConfigName,
+    );
+
+    await performAllCalculationsResponsePromise;
+    await condenserListResponsePromise;
+    await condenserFormattedResponsePromise;
 
     await page.pause();
   });

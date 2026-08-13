@@ -10,7 +10,7 @@ export class CreateConfig {
 
   }
 
-  async createConfiguration(token:string) {
+  async createConfiguration(token:string, name?: string) {
    
     const res = await this.request.post(
       "https://api.development.oneselect.global/v1/globals/saveConfiguration",
@@ -24,7 +24,7 @@ export class CreateConfig {
 
         data: {
           id: 0,
-          name: "test #123",
+          name: name,
           description: "",
           filterId: 1,
           selectedProductionFacilityId: 0,
