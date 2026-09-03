@@ -20,3 +20,16 @@ export const splitAirModels = {
   SXG40_0: "SXG 40 0",
   SXG40F: "SXG 40 F",
 };
+
+export const deuProductLineNames = ["CyberAir", "CyberLab", "CyberAir Mini"];
+export const chinaProductLineNames = [
+  "CyberAir",
+  "MiniSpace",
+  "CyberLab",
+  "CyberAir Mini",
+  "CyberFlow",
+  "CyberAir 3 Classic",
+];
+
+export const spainProductlineName = ["CyberAir"]
+export const usaProductlineName = ["CyberAir","MiniSpace","CyberFlow","CyberOne","Overhead"]

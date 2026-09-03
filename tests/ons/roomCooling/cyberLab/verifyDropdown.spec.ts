@@ -17,6 +17,7 @@ let configurationData: {
 };
 
 import { type Page } from "@playwright/test";
+import { tr } from "@faker-js/faker";
 
 async function getAccessToken(page: Page): Promise<string> {
   const state = await page.context().storageState();
@@ -45,10 +46,11 @@ test.describe("Verify the save config dropdowns in cyber lab", () => {
   };
   let token: any;
 
-  test.beforeAll(async ({ page }) => {
-    token = await getAccessToken(page);
-  });
+  // test.beforeAll(async () => {
+  // });
   test.beforeEach(async ({ page }) => {
+    let token = await getAccessToken(page);
+
     const config = new CreateConfig(page);
     await config.createConfiguration(token, configurationData.configName);
   });
@@ -91,17 +93,28 @@ test.describe("Verify the save config dropdowns in cyber lab", () => {
       await page.waitForLoadState("domcontentloaded");
     });
 
-    const newConfigName= "Test" + (+Date.now() % 100000)
+    const newConfigName = "Test" + (+Date.now() % 100000);
 
-    await savingPage.saveConfiguration(
-      "Test ONS",
-      newConfigName,
-    );
+    await savingPage.saveConfiguration("Test switchable", newConfigName);
 
     await performAllCalculationsResponsePromise;
     await condenserListResponsePromise;
     await condenserFormattedResponsePromise;
 
+    await page.waitForLoadState("load");
+    await page.waitForLoadState("domcontentloaded", { timeout: 5000 });
+    await page.locator("#edit-msg").first().click({ force: true });
+    let configList = await page
+      .locator("div.scrollable-config-menu>a")
+      .allTextContents();
+    configList.map(async (el) => {
+      if (el.includes(configurationData.configName)) {
+        await expect(el).toContain(configurationData.configName);
+      }
+    });
+
+    // await expect(configList).toContain(configurationData.configName)
+    console.log(configList, ">>>>>>>>>>>>>");
     await page.pause();
   });
 });

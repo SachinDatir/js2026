@@ -17,6 +17,9 @@ export class DashboardPage {
   readonly cciIndoor: Locator;
   readonly cc2Card: Locator;
   readonly cyberLabCard: Locator;
+  readonly chnProductLine :Locator
+  readonly espProductLine :Locator
+  readonly usaProductLine :Locator
 
   constructor(page: Page) {
     this.page = page;
@@ -54,6 +57,9 @@ export class DashboardPage {
     this.cyberLabCard = this.deuProductLine.getByRole("heading", {
       name: "CyberLab",exact: true
     });
+    this.chnProductLine = page.locator("#CHN")
+    this.espProductLine = page.locator("#ESP")
+    this.usaProductLine = page.locator("#USA")
   }
 
   async openRoomCooling() {

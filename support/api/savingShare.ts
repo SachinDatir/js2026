@@ -10,7 +10,7 @@ export class CreateConfig {
 
   }
 
-  async createConfiguration(token:string, name?: string) {
+  async createConfiguration(token:string, name?: string, projectName?:string) {
    
     const res = await this.request.post(
       "https://api.development.oneselect.global/v1/globals/saveConfiguration",
@@ -5692,10 +5692,10 @@ export class CreateConfig {
           userJwt:
             "eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNyc2Etc2hhMjU2IiwidHlwIjoiSldUIn0.eyJhdWQiOiJodHRwOi8vc3R1bHotdHN0LmNwcS5jbG91ZC5zYXAiLCJpc3MiOiJodHRwczovL3N0YWdpbmcub25lc2VsZWN0Lmdsb2JhbC8iLCJleHAiOjE3ODY1NDg3NzcsIm5iZiI6MTc4NjU0ODQ3NywiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9hdXRoZW50aWNhdGlvbmluc3RhbnQiOiJPQXV0aCAyLjAiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiaXRzb2Z0d2FyZTE2QHN0dWx6c2VydmljZS5pbiIsIlVzZXJJZCI6IjE1MyIsIlVzZXJGdWxsTmFtZSI6IkRhdGlyIFNhY2hpbiIsIkRvbWFpbiI6IlNUVUxaX1RTVCIsIklzQWRtaW4iOiJGYWxzZSIsIkRhdGVGb3JtYXQiOiJNTUREWVkiLCJEYXRlU2VwYXJhdG9yIjoiU0xBU0giLCJJc0ltcGVyc29uYXRlZCI6IkZhbHNlIiwiSW1wZXJzb25hdGVkTG9naW5UeXBlIjoiLTEiLCJJbXBlcnNvbmF0ZWRVc2VyRnVsbE5hbWUiOiIiLCJJbXBlcnNvbmF0ZWRVc2VybmFtZSI6IiIsIlNlZ3JlZ2F0aW9uUGVybWlzc2lvbklkcyI6Ijk3IiwiUGVybWlzc2lvbklkcyI6IjEsMjYsODAsOTQsOTciLCJTZXNzaW9uSWQiOiIiLCJEaWN0aW9uYXJ5SWQiOiIyOTMiLCJBbHRlcm5hdGl2ZURpY3Rpb25hcnkiOiIiLCJBY2Nlc3NUb2tlbklkIjoiMjk3Mjk4IiwiaWF0IjoxNzg2NTQ4NDc3fQ.ON7upRii6YuZPgXoIEMy8KwJqW4CM2nY3jG-FxaKDmbeR0b6LHyQOHord-_H5sbus0fld3R8i7UNzvxu1XfsJ3gUSI7G5qkj4BaQhF3QFnWTpxpOsb_Td6HW4buZOICki0hHfaWEPRcuUXkfRoFlwqLrbWrj5hbRwQzBeVsbA6Um1yvB8IbRWunu9nlhEDkVOVwZryRhU-fAHOCTGvwi4AcdiSbqKAmxJLP5N6Nq0FN64mrvsX80G4ZAZNJxZbBCqmH4QWpzdZcMiBmznftH40xKfV83PHT8kUH116cZf-aQ8YKQr5XuxfcFW3gSDhDGPQaZqUHK89FzFGo7Qd9QMg",
           erdData: {},
-          projectId: 468,
+          projectId: 582,
           clientId: null,
           Project: {
-            name: "",
+            name: projectName,
           },
           Sharing: {
             status: "VIEW",
