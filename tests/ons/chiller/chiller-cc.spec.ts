@@ -35,6 +35,5 @@ test.describe("Validate the CC2 MOP", () => {
       await dashBoardPage.selectPowerSupply(powerSupply);
     });
 
-    await page.pause();
   });
 });
